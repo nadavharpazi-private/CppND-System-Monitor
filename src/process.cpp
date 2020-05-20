@@ -22,7 +22,7 @@ pid_(pid)
 int Process::Pid() const { return pid_; }
 
 // DONE: Return this process's CPU utilization
-float Process::CpuUtilization() const { return LinuxParser::ActiveJiffies(pid_); }
+float Process::CpuUtilization() const { return LinuxParser::CpuUtilization(pid_); }
 
 // DONE: Return the command that generated this process
 string Process::Command() const { return LinuxParser::Command(pid_); }
@@ -38,5 +38,5 @@ long int Process::UpTime() const { return LinuxParser::UpTime(pid_); }
 
 // DONE: Overload the "less than" comparison operator for Process objects
 bool Process::operator<(Process const& a) const { 
-    return ( a.Ram() < this->Ram());
+    return ( a.CpuUtilization() < this->CpuUtilization());
 }

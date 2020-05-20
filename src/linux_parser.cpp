@@ -10,6 +10,8 @@ using std::string;
 using std::to_string;
 using std::vector;
 
+static const auto Hertz = sysconf(_SC_CLK_TCK);
+
 // DONE: An example of how to read data from the filesystem
 string LinuxParser::OperatingSystem() {
   string line;
@@ -109,25 +111,27 @@ long LinuxParser::Jiffies() {
   return total_time;
 }
 
-// TODO: Read and return the number of active jiffies for a PID
-long LinuxParser::ActiveJiffies(int pid) { 
-  string utime_str;
-  string line;
+// DONE: Read and return the number of active jiffies for a PID
+float LinuxParser::CpuUtilization(int pid) { 
+  string line, dummy;
+  long utime, stime, active_time;
   std::ifstream stream(kProcDirectory + to_string(pid) + "/" + kStatFilename);
   if (stream.is_open()) {
     std::getline(stream, line);
     std::istringstream linestream(line);
-    for (int i=0; i < 14; i++) {
-      linestream >> utime_str;
+    for (int i=0; i < 13; i++) {
+      linestream >> dummy;
     }
+    linestream >> utime >> stime;
+    active_time = utime + stime;
   }
-  if (utime_str == "") {
-    return 0;
+  
+  float seconds = UpTime(pid);
+  if (seconds == 0) {
+    return 0.0;
   }
-  long clock_ticks = stol(utime_str);
-  // long active_time = clock_ticks / sysconf(_SC_CLK_TCK);
-  long usage = clock_ticks / ActiveJiffies();
-  return usage;
+  float cpu_usage = (active_time / Hertz) / seconds;
+  return cpu_usage;
 }
 
 // user;         (1) 
@@ -304,21 +308,18 @@ string LinuxParser::User(int pid) {
 
 // DONE: Read and return the uptime of a process
 long int LinuxParser::UpTime(int pid) { 
-  string uptime_str;
+  string dummy;
   string line;
+  long start_time;
   std::ifstream stream(kProcDirectory + to_string(pid) + "/" + kStatFilename);
   if (stream.is_open()) {
     std::getline(stream, line);
     std::istringstream linestream(line);
-    for (int i=0; i < 22; i++) {
-      linestream >> uptime_str;
+    for (int i=0; i < 21; i++) {
+      linestream >> dummy;
     }
+    linestream >> start_time;
   }
-  if (uptime_str == "") {
-    return 0;
-  }
-  long clock_ticks = stol(uptime_str);
-  long start_time = clock_ticks / sysconf(_SC_CLK_TCK);
-  long process_uptime = LinuxParser::UpTime() - start_time;
+  long process_uptime = UpTime() - (start_time / Hertz);
   return process_uptime;
 }
