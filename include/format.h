@@ -3,6 +3,8 @@
 
 #include <string>
 
+#define DATE_LENGTH 200
+
 namespace Format {
 std::string ElapsedTime(long times);  // TODO: See src/format.cpp
 };                                    // namespace Format
