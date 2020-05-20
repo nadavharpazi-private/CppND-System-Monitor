@@ -252,6 +252,8 @@ long int LinuxParser::UpTime(int pid) {
   if (uptime_str == "") {
     return 0;
   }
-  long uptime = stol(uptime_str);
-  return uptime;
+  long clock_ticks = stol(uptime_str);
+  long start_time = clock_ticks / sysconf(_SC_CLK_TCK);
+  long process_uptime = LinuxParser::UpTime() - start_time;
+  return process_uptime;
 }

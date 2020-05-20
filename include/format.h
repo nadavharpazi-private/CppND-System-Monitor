@@ -6,7 +6,8 @@
 #define DATE_LENGTH 200
 
 namespace Format {
-std::string ElapsedTime(long times);  // TODO: See src/format.cpp
+std::string ElapsedTime(long times);
+std::string ElapsedTimeWithDays(long seconds);
 };                                    // namespace Format
 
 #endif
