@@ -17,7 +17,7 @@ using std::vector;
 // TODO: Return the system's CPU
 Processor& System::Cpu() { return cpu_; }
 
-// TODO: Return a container composed of the system's processes
+// DONE: Return a container composed of the system's processes
 vector<Process>& System::Processes() {
 
   processes_.clear();
@@ -26,8 +26,10 @@ vector<Process>& System::Processes() {
   for (int pid : Pids) {
     Process process(pid);
     processes_.push_back(process);
-
   }
+
+  auto lambda_expression = [] (const Process a, const Process b) {return a < b;};
+  sort(processes_.begin(), processes_.end(), lambda_expression);
   return processes_;
 }
 
