@@ -40,5 +40,7 @@ long int Process::UpTime() const { return LinuxParser::UpTime(pid_); }
 
 // DONE: Overload the "less than" comparison operator for Process objects
 bool Process::operator<(Process const& a) const {
-  return (a.CpuUtilization() < this->CpuUtilization());
+  return a.CpuUtilization() < this->CpuUtilization(); // sort from highest to lowest cpu usage
+//  return pid_ < a.Pid(); // sort by pid, from smallest to largest number
+//  return a.Ram() < this->Ram(); // sort by Ram, from high to low
 }
