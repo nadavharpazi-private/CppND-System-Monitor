@@ -85,7 +85,7 @@ float LinuxParser::MemoryUtilization() {
           memFree = stoi(value);
         }
         if (memFree != 0 && memTotal != 0) {
-          long memUsed = (memTotal - memFree) * 1.0 / memTotal;
+          float memUsed = (memTotal - memFree) * 1.0 / memTotal;
           return memUsed;
         }
       }
