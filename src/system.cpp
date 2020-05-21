@@ -29,7 +29,7 @@ vector<Process>& System::Processes() {
     processes_.push_back(process);
   }
 
-  auto lambda_expression = [](const Process& a, const Process& b) {
+  auto lambda_expression = [](const Process a, const Process b) {
     return a < b;
   };
   sort(processes_.begin(), processes_.end(), lambda_expression);
