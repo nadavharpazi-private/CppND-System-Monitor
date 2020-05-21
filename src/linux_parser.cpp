@@ -241,18 +241,18 @@ string LinuxParser::Command(int pid) {
   return command;
 }
 
-// DONE: Read and return the memory used by a process
-string LinuxParser::Ram(int pid) { 
+// DONE: Read and return the memory used by a process (in KB)
+long LinuxParser::Ram(int pid) { 
   string key, value;
   string line;
-  string ram;
+  long ram;
   std::ifstream stream(kProcDirectory + to_string(pid) + "/" + kStatusFilename);
   if (stream.is_open()) {
     while (std::getline(stream, line)) {
       std::istringstream linestream(line);
       while (linestream >> key >> value) {
         if (key == "VmSize:") {
-          ram = value;
+          ram = stol(value);
           return ram;
         }
       }

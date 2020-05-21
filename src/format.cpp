@@ -3,6 +3,7 @@
 #include "format.h"
 
 using std::string;
+using std::to_string;
 
 // INPUT: Long int measuring seconds
 // OUTPUT: HH:MM:SS
@@ -26,5 +27,12 @@ string Format::ElapsedTimeWithDays(long seconds) {
   seconds -= minutes * 60;
   char formatted[DATE_LENGTH]{};
   sprintf(formatted, "%d Days, %02d:%02ld:%02ld", days, hours, minutes, seconds);
+  return string(formatted);
+}
+
+string Format::KBs_to_MBs(long kilobytes) {
+  // return to_string(kilobytes);
+  char formatted[RAM_LENGTH]{};
+  sprintf(formatted, "%.1f", kilobytes / 1024.0);
   return string(formatted);
 }
