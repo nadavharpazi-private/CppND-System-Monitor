@@ -145,10 +145,11 @@ float LinuxParser::CpuUtilization(int pid) {
 // softirq;	     (7)
 // steal;  	     (8)
 // guest;  	     (9)
-// guest_nice;       (10)
+// guest_nice;   (10)
 
 // DONE: Read and return the number of active jiffies for the system
 long LinuxParser::ActiveJiffies() {
+  string dummy;
   long user, nice, system, idle, iowait;
   long irq, softirq, steal, guest, guest_nice;
   string line;
@@ -156,7 +157,7 @@ long LinuxParser::ActiveJiffies() {
   if (stream.is_open()) {
     std::getline(stream, line);
     std::istringstream linestream(line);
-    linestream >> user >> nice >> system >> idle >> iowait;
+    linestream >> dummy >> user >> nice >> system >> idle >> iowait;
     linestream >> irq >> softirq >> steal >> guest >> guest_nice;
   }
   long active_time = user + nice + system + irq + softirq + steal;
@@ -165,6 +166,7 @@ long LinuxParser::ActiveJiffies() {
 
 // DONE: Read and return the number of idle jiffies for the system
 long LinuxParser::IdleJiffies() {
+  string dummy;
   long user, nice, system, idle, iowait;
   long irq, softirq, steal, guest, guest_nice;
   string line;
@@ -172,7 +174,7 @@ long LinuxParser::IdleJiffies() {
   if (stream.is_open()) {
     std::getline(stream, line);
     std::istringstream linestream(line);
-    linestream >> user >> nice >> system >> idle >> iowait;
+    linestream >> dummy >> user >> nice >> system >> idle >> iowait;
     linestream >> irq >> softirq >> steal >> guest >> guest_nice;
   }
   long idle_time = idle + iowait;
@@ -180,13 +182,14 @@ long LinuxParser::IdleJiffies() {
 }
 
 // DONE: Read and return CPU utilization
-vector<float> LinuxParser::CpuUtilization() {
-  vector<float> result;
+vector<long> LinuxParser::CpuUtilization() {
+  vector<long> result;
   long active_time = ActiveJiffies();
   long idle_time = IdleJiffies();
   long total_time = active_time + idle_time;
-  float usage = active_time * 1.0 / total_time;
-  result.push_back(usage);
+
+  result.push_back(active_time);
+  result.push_back(total_time);
   return result;
 }
 

@@ -5,8 +5,11 @@ class Processor {
  public:
   float Utilization();
 
-  // TODO: Declare any necessary private members
  private:
+  int rounds{0};
+  long prev_active_time{0};
+  long prev_total_time{0};
+  float prev_usage{0.0};
 };
 
 #endif
