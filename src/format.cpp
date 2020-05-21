@@ -1,6 +1,6 @@
-#include <string>
-
 #include "format.h"
+
+#include <string>
 
 using std::string;
 using std::to_string;
@@ -26,8 +26,15 @@ string Format::ElapsedTimeWithDays(long seconds) {
   long minutes = seconds / 60;
   seconds -= minutes * 60;
   char formatted[DATE_LENGTH]{};
-  sprintf(formatted, "%d Days, %02d:%02ld:%02ld", days, hours, minutes, seconds);
+  sprintf(formatted, "%d Days, %02d:%02ld:%02ld", days, hours, minutes,
+          seconds);
   return string(formatted);
+}
+
+string Format::ElapsedTimeExtended(long seconds) {
+  string format =
+      ElapsedTimeWithDays(seconds) + " (" + ElapsedTime(seconds) + ")";
+  return format;
 }
 
 string Format::KBs_to_MBs(long kilobytes) {

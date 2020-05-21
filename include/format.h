@@ -9,8 +9,9 @@
 namespace Format {
 std::string ElapsedTime(long times);
 std::string ElapsedTimeWithDays(long seconds);
+std::string ElapsedTimeExtended(long seconds);
 std::string KBs_to_MBs(long kilobytes);
 
-};                                    // namespace Format
+};  // namespace Format
 
 #endif

@@ -12,18 +12,18 @@ class Process {
  public:
   Process(int pid);
 
-  int Pid() const;                               
-  std::string User() const;                      
-  std::string Command() const;                   
+  int Pid() const;
+  std::string User() const;
+  std::string Command() const;
   float CpuUtilization() const;
-  long Ram() const;                       
-  long int UpTime() const;                       
-  bool operator<(Process const& a) const;  
+  long Ram() const;
+  long int UpTime() const;
+  bool operator<(Process const& a) const;
 
  private:
-    int pid_{0};
-    std::string user_{""};
-    std::string command_{""};
+  int pid_{0};
+  std::string user_{""};
+  std::string command_{""};
 };
 
 #endif
