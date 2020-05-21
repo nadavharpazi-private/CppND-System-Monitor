@@ -27,13 +27,13 @@ float Process::CpuUtilization() const {
 }
 
 // DONE: Return the command that generated this process
-string Process::Command() const { return LinuxParser::Command(pid_); }
+string Process::Command() const { return command_; }
 
 // DONE: Return this process's memory utilization
 long Process::Ram() const { return LinuxParser::Ram(pid_); }
 
 // DONE: Return the user (name) that generated this process
-string Process::User() const { return LinuxParser::User(pid_); }
+string Process::User() const { return user_; }
 
 // DONE: Return the age of this process (in seconds)
 long int Process::UpTime() const { return LinuxParser::UpTime(pid_); }
