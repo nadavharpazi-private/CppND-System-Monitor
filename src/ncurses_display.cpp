@@ -78,7 +78,7 @@ void NCursesDisplay::DisplayProcesses(std::vector<Process>& processes,
     float cpu = processes[i].CpuUtilization() * 100;
     mvwprintw(window, row, cpu_column, to_string(cpu).substr(0, 4).c_str());
     mvwprintw(window, row, ram_column,
-              Format::KBs_to_MBs(processes[i].Ram()).c_str());
+              Format::KBs_to_MBs(processes[i].RamRSS()).c_str());
     mvwprintw(window, row, time_column,
               Format::ElapsedTime(processes[i].UpTime()).c_str());
     mvwprintw(window, row, command_column,

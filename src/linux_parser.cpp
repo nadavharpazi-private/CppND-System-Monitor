@@ -85,7 +85,8 @@ float LinuxParser::MemoryUtilization() {
           memFree = stoi(value);
         }
         if (memFree != 0 && memTotal != 0) {
-          return (memFree * 1.0) / memTotal;
+          long memUsed = (memTotal - memFree) * 1.0 / memTotal;
+          return memUsed;
         }
       }
     }
@@ -244,7 +245,27 @@ string LinuxParser::Command(int pid) {
 }
 
 // DONE: Read and return the memory used by a process (in KB)
-long LinuxParser::Ram(int pid) {
+long LinuxParser::RamRSS(int pid) {
+  string key, value;
+  string line;
+  long ram;
+  std::ifstream stream(kProcDirectory + to_string(pid) + "/" + kStatusFilename);
+  if (stream.is_open()) {
+    while (std::getline(stream, line)) {
+      std::istringstream linestream(line);
+      while (linestream >> key >> value) {
+        if (key == "VmRSS:") {
+          ram = stol(value);
+          return ram;
+        }
+      }
+    }
+  }
+  return ram;
+}
+
+// DONE: Read and return the memory used by a process (in KB)
+long LinuxParser::RamVirtual(int pid) {
   string key, value;
   string line;
   long ram;
