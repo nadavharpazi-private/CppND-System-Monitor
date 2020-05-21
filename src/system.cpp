@@ -31,8 +31,6 @@ vector<Process>& System::Processes() {
     // check that the process object has initialized properly.
     // add it to the vector only if it has.
     if (!process.isOK()) {
-      cout << "process with PID: " << pid << "has not initialized properly. aborting..\n";
-      exit(-1);
       continue;
     }
     processes_.push_back(process);
