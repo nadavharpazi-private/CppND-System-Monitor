@@ -17,6 +17,10 @@ using std::vector;
 Process::Process(int pid) : pid_(pid) {
   user_ = LinuxParser::User(pid_);
   command_ = LinuxParser::Command(pid_);
+  if (pid_ && !user_.empty() && !command_.empty()) {
+      // signal that process object is correct and initialized properly
+      ok_ = true;
+  }
 }
 
 int Process::Pid() const { return pid_; }
@@ -44,6 +48,4 @@ long int Process::UpTime() const { return LinuxParser::UpTime(pid_); }
 // DONE: Overload the "less than" comparison operator for Process objects
 bool Process::operator<(Process const& a) const {
   return a.CpuUtilization() < this->CpuUtilization(); // sort from highest to lowest cpu usage
-//  return pid_ < a.Pid(); // sort by pid, from smallest to largest number
-//  return a.RamRSS() < this->RamRSS(); // sort by Ram, from high to low
 }

@@ -12,6 +12,7 @@ class Process {
  public:
   Process(int pid);
 
+  bool isOK() const { return ok_; }
   int Pid() const;
   std::string User() const;
   std::string Command() const;
@@ -22,6 +23,7 @@ class Process {
   bool operator<(Process const& a) const;
 
  private:
+  bool ok_{false};
   int pid_{0};
   std::string user_{};
   std::string command_{};

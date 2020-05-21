@@ -6,6 +6,7 @@
 #include <set>
 #include <string>
 #include <vector>
+#include <iostream>
 
 #include "linux_parser.h"
 #include "process.h"
@@ -15,8 +16,9 @@ using std::set;
 using std::size_t;
 using std::string;
 using std::vector;
+using std::cout;
 
-// TODO: Return the system's CPU
+// DONE: Return the system's CPU object
 Processor& System::Cpu() { return cpu_; }
 
 // DONE: Return a container composed of the system's processes
@@ -26,10 +28,16 @@ vector<Process>& System::Processes() {
   vector<int> Pids = LinuxParser::Pids();
   for (int pid : Pids) {
     Process process(pid);
+    // check that the process object has initialized properly.
+    // add it to the vector only if it has.
+    if (!process.isOK()) {
+      cout << "process with PID: " << pid << "has not initialized properly. aborting..\n";
+      continue;
+    }
     processes_.push_back(process);
   }
 
-  auto lambda_expression = [](const Process a, const Process b) {
+  auto lambda_expression = [](const Process & a, const Process & b) {
     return a < b;
   };
   sort(processes_.begin(), processes_.end(), lambda_expression);
