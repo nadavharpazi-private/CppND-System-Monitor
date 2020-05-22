@@ -96,7 +96,7 @@ float LinuxParser::MemoryUtilization() {
 
 // DONE: Read and return the system uptime
 long LinuxParser::UpTime() {
-  long uptime;
+  long uptime = 0;
   string line;
   std::ifstream filestream(kProcDirectory + kUptimeFilename);
   if (filestream.is_open()) {
@@ -116,7 +116,7 @@ long LinuxParser::Jiffies() {
 // DONE: Read and return the number of active jiffies for a PID
 float LinuxParser::CpuUtilization(int pid) {
   string line, dummy;
-  long utime, stime, active_time;
+  long utime = 0, stim = 0, active_time = 0;
   std::ifstream stream(kProcDirectory + to_string(pid) + "/" + kStatFilename);
   if (stream.is_open()) {
     std::getline(stream, line);
@@ -136,6 +136,8 @@ float LinuxParser::CpuUtilization(int pid) {
   return cpu_usage;
 }
 
+// Active / Idle jiffies are read from /proc/stat according to this order:
+// "cpu"         (0) (ignored, marked "dummy")
 // user;         (1)
 // nice;         (2)
 // system; 	     (3)
@@ -150,8 +152,8 @@ float LinuxParser::CpuUtilization(int pid) {
 // DONE: Read and return the number of active jiffies for the system
 long LinuxParser::ActiveJiffies() {
   string dummy;
-  long user, nice, system, idle, iowait;
-  long irq, softirq, steal, guest, guest_nice;
+  long user = 0, nice = 0, system = 0, idle = 0, iowait = 0;
+  long irq = 0, softirq = 0, steal = 0, guest = 0, guest_nice = 0;
   string line;
   std::ifstream stream(kProcDirectory + kStatFilename);
   if (stream.is_open()) {
@@ -167,8 +169,8 @@ long LinuxParser::ActiveJiffies() {
 // DONE: Read and return the number of idle jiffies for the system
 long LinuxParser::IdleJiffies() {
   string dummy;
-  long user, nice, system, idle, iowait;
-  long irq, softirq, steal, guest, guest_nice;
+  long user = 0, nice = 0, system = 0, idle = 0, iowait = 0;
+  long irq = 0, softirq = 0, steal = 0, guest = 0, guest_nice = 0;
   string line;
   std::ifstream stream(kProcDirectory + kStatFilename);
   if (stream.is_open()) {
@@ -251,7 +253,7 @@ string LinuxParser::Command(int pid) {
 long LinuxParser::RamRSS(int pid) {
   string key, value;
   string line;
-  long ram;
+  long ram = 0;
   std::ifstream stream(kProcDirectory + to_string(pid) + "/" + kStatusFilename);
   if (stream.is_open()) {
     while (std::getline(stream, line)) {
@@ -271,7 +273,7 @@ long LinuxParser::RamRSS(int pid) {
 long LinuxParser::RamVirtual(int pid) {
   string key, value;
   string line;
-  long ram;
+  long ram = 0;
   std::ifstream stream(kProcDirectory + to_string(pid) + "/" + kStatusFilename);
   if (stream.is_open()) {
     while (std::getline(stream, line)) {
@@ -334,7 +336,7 @@ string LinuxParser::User(int pid) {
 long int LinuxParser::UpTime(int pid) {
   string dummy;
   string line;
-  long start_time;
+  long start_time = 0;
   std::ifstream stream(kProcDirectory + to_string(pid) + "/" + kStatFilename);
   if (stream.is_open()) {
     std::getline(stream, line);
