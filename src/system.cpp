@@ -29,10 +29,10 @@ vector<Process>& System::Processes() {
   for (int pid : Pids) {
     Process process(pid);
     // check that the process object has initialized properly.
-    // add it to the vector only if it has.
     if (!process.isOK()) {
       continue;
     }
+    // add the process it to the vector only if it OK.
     processes_.push_back(process);
   }
 

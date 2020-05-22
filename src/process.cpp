@@ -3,7 +3,6 @@
 #include <unistd.h>
 
 #include <cctype>
-#include <iostream>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -15,6 +14,8 @@ using std::to_string;
 using std::vector;
 
 Process::Process(int pid) : pid_(pid) {
+  // pid, user name and command are not going to change,
+  // therefore they are stored as class members by the constructor
   user_ = LinuxParser::User(pid_);
   command_ = LinuxParser::Command(pid_);
   if (pid_ && !user_.empty() && !command_.empty()) {
@@ -47,5 +48,5 @@ long int Process::UpTime() const { return LinuxParser::UpTime(pid_); }
 
 // DONE: Overload the "less than" comparison operator for Process objects
 bool Process::operator<(Process const& a) const {
-  return a.CpuUtilization() < this->CpuUtilization(); // sort from highest to lowest cpu usage
+  return a.CpuUtilization() < this->CpuUtilization(); // sort by cpu usage, from highest to lowest
 }
