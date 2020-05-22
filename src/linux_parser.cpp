@@ -107,16 +107,10 @@ long LinuxParser::UpTime() {
   return uptime;
 }
 
-// DONE: Read and return the number of jiffies for the system
-long LinuxParser::Jiffies() {
-  long total_time = ActiveJiffies() + IdleJiffies();
-  return total_time;
-}
-
 // DONE: Read and return the number of active jiffies for a PID
 float LinuxParser::CpuUtilization(int pid) {
   string line, dummy;
-  long utime = 0, stim = 0, active_time = 0;
+  long utime = 0, stime = 0, active_time = 0;
   std::ifstream stream(kProcDirectory + to_string(pid) + "/" + kStatFilename);
   if (stream.is_open()) {
     std::getline(stream, line);
@@ -136,7 +130,7 @@ float LinuxParser::CpuUtilization(int pid) {
   return cpu_usage;
 }
 
-// Active / Idle jiffies are read from /proc/stat according to this order:
+// CPU jiffies are read from /proc/stat according to this order:
 // "cpu"         (0) (ignored, marked "dummy")
 // user;         (1)
 // nice;         (2)
@@ -149,47 +143,51 @@ float LinuxParser::CpuUtilization(int pid) {
 // guest;  	     (9)
 // guest_nice;   (10)
 
-// DONE: Read and return the number of active jiffies for the system
-long LinuxParser::ActiveJiffies() {
+// DONE: Read and return the number of jiffies for the system
+vector <long> LinuxParser::Jiffies() {
   string dummy;
   long user = 0, nice = 0, system = 0, idle = 0, iowait = 0;
-  long irq = 0, softirq = 0, steal = 0, guest = 0, guest_nice = 0;
+  long irq = 0, softirq = 0, steal = 0;
   string line;
   std::ifstream stream(kProcDirectory + kStatFilename);
   if (stream.is_open()) {
     std::getline(stream, line);
     std::istringstream linestream(line);
     linestream >> dummy >> user >> nice >> system >> idle >> iowait;
-    linestream >> irq >> softirq >> steal >> guest >> guest_nice;
+    linestream >> irq >> softirq >> steal;  // skip guest & guest_nice
   }
-  long active_time = user + nice + system + irq + softirq + steal;
-  return active_time;
-}
 
-// DONE: Read and return the number of idle jiffies for the system
-long LinuxParser::IdleJiffies() {
-  string dummy;
-  long user = 0, nice = 0, system = 0, idle = 0, iowait = 0;
-  long irq = 0, softirq = 0, steal = 0, guest = 0, guest_nice = 0;
-  string line;
-  std::ifstream stream(kProcDirectory + kStatFilename);
-  if (stream.is_open()) {
-    std::getline(stream, line);
-    std::istringstream linestream(line);
-    linestream >> dummy >> user >> nice >> system >> idle >> iowait;
-    linestream >> irq >> softirq >> steal >> guest >> guest_nice;
-  }
-  long idle_time = idle + iowait;
-  return idle_time;
+  vector<long> jiffies;
+  jiffies.push_back(steal);
+  jiffies.push_back(softirq);
+  jiffies.push_back(irq);
+  jiffies.push_back(iowait);
+  jiffies.push_back(idle);
+  jiffies.push_back(system);
+  jiffies.push_back(nice);
+  jiffies.push_back(user);
+  return jiffies;
 }
 
 // DONE: Read and return CPU utilization
 vector<long> LinuxParser::CpuUtilization() {
-  vector<long> result;
-  long active_time = ActiveJiffies();
-  long idle_time = IdleJiffies();
+
+  vector <long>  jiffies = Jiffies();
+  long user =    jiffies.back(); jiffies.pop_back();
+  long nice =    jiffies.back(); jiffies.pop_back();
+  long system =  jiffies.back(); jiffies.pop_back();
+  long idle =    jiffies.back(); jiffies.pop_back();
+  long iowait =  jiffies.back(); jiffies.pop_back();
+  long irq =     jiffies.back(); jiffies.pop_back();
+  long softirq = jiffies.back(); jiffies.pop_back();
+  long steal =   jiffies.back(); jiffies.pop_back();
+
+  // calculate idle time, active time and tital time (in jiffies)
+  long idle_time = idle + iowait;
+  long active_time = user + nice + system + irq + softirq + steal;
   long total_time = active_time + idle_time;
 
+  vector<long> result;
   result.push_back(active_time);
   result.push_back(total_time);
   return result;
